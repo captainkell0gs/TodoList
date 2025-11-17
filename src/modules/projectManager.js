@@ -1,0 +1,43 @@
+export default class ProjectManager {
+    projects = [];
+
+    addProject(project) {
+        this.projects.push(project);
+    }
+
+    removeProject(id) {
+        const index = this.projects.findIndex(b => b.id === id);
+        if (index !== -1) {
+            this.projects.splice(index, 1);
+        }
+    }
+
+    editProject(id, name) {
+        const project = this.projects.find(b => b.id === id);
+        if (project) {
+            project.edit(name);
+            return true;
+        }
+        return false;
+    }
+
+    getProject(id) {
+        return this.projects.find(b => b.id === id);
+    }
+
+    getProjects() {
+        return this.projects;
+    }
+
+    searchProjects(input) {
+        if (!input) return this.projects;
+        const lowerInput = input.toLowerCase();
+        return this.projects.filter(project => 
+            project.name.toLowerCase().includes(lowerInput)
+        );
+    }
+
+    count() {
+        return this.projects.length;
+    }
+}
