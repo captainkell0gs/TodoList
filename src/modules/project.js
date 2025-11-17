@@ -1,0 +1,37 @@
+export default class Project {
+    constructor(name, todos = []) {
+        this.name = name;
+        this.todos = todos;
+        this.id = crypto.randomUUID();
+    }
+
+    addTodo(todo) {
+        this.todos.push(todo);
+    }
+
+    removeTodo(id) {
+        const index = this.todos.findIndex(b => b.id === id);
+        if (index !== -1) {
+            this.todos.splice(index, 1);
+        }
+    }
+
+    edit(name) {
+        this.name = name;
+    }
+
+    getTodos() {
+        return this.todos;
+    }
+
+    searchTodos(input) {
+        if (!input) return this.todos;
+        const lowerInput = input.toLowerCase();
+        return this.todos.filter(todo => 
+            todo.title.toLowerCase().includes(lowerInput) ||
+            todo.description.toLowerCase().includes(lowerInput) ||
+            todo.priority.toLowerCase().includes(lowerInput)||
+            todo.dueDate.includes(lowerInput)
+        );
+    }
+}
