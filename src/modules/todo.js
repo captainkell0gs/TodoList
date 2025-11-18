@@ -23,10 +23,14 @@ export default class Todo {
     }
 
     isOverdue() {
+        if (this.completed) return false;
+
         const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to midnight
+
         const due = new Date(this.dueDate);
-        if (today > due && !this.completed) {
-            return true;
-        }else {return false;}
+        due.setHours(0, 0, 0, 0); // Normalize to midnight
+
+        return due < today;
     }
 }
