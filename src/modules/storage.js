@@ -32,6 +32,8 @@ class Storage {
                 todo.notes ??= "";
                 todo.checklist ??= [];
                 todo.id = todoData.id;
+                todo.dueDate = new Date(todoData.dueDate) ?
+                new Date(todoData.dueDate) : null;
 
                 project.addTodo(todo);
             });
