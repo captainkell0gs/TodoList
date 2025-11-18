@@ -1,3 +1,5 @@
+import Todo from './todo.js';
+
 export default class Project {
     constructor(name, todos = []) {
         this.name = name;
@@ -6,7 +8,7 @@ export default class Project {
     }
 
     addTodo(todo) {
-        this.todos.push(todo);
+        if(todo instanceof Todo) this.todos.push(todo);
     }
 
     removeTodo(id) {
