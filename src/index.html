@@ -6,6 +6,60 @@
     <title>Todo List</title>
 </head>
 <body>
-    
+    <div id="todo-app">
+
+        <aside id="sidebar">
+            <header>
+                <h2>Projects</h2>
+                <button id="add-project-btn">+</button>
+            </header>
+
+            <ul id="project-list"></ul>
+        </aside>
+
+        <main id="main">
+            <header id="main-header">
+                <h2 id="project-title">Default Project</h2>
+                <button id="add-todo-btn" disabled>Add Todo</button>
+            </header>
+
+            <section id="todo-list-section"></section>
+        </main>
+
+    </div>
+
+    <dialog id="project-modal">
+        <form method="dialog" id="project-form">
+            <h3>New Project</h3>
+            <input type="text" id="project-name-input" placeholder="Project name" required>
+            <menu>
+                <button value="cancel">Cancel</button>
+                <button id="project-submit-btn" value="default">Create</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <dialog id="todo-modal">
+        <form method="dialog" id="todo-form">
+            <h3>New Todo</h3>
+
+            <input type="text" id="todo-title-input" placeholder="Title" required>
+
+            <textarea id="todo-description-input" placeholder="Description"></textarea>
+
+            <input type="date" id="todo-date-input">
+
+            <select id="todo-priority-input">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
+
+            <menu>
+                <button value="cancel">Cancel</button>
+                <button id="todo-submit-btn" value="default">Save</button>
+            </menu>
+        </form>
+    </dialog>
 </body>
 </html>
