@@ -82,10 +82,94 @@ class Dom {
             item.classList.add("todo-item");
             item.textContent = todo.title;
 
+            if (todo.completed) {
+                item.classList.add("completed");
+            }
+
             item.dataset.id = todo.id;
 
             section.appendChild(item);
         });
+
+        this.bindTodoItemEvents();
+    };
+
+    bindProjectEvents() {
+        this.elements.addProjectBtn.addEventListener("click", () => {
+            this.elements.projectModal.showModal();
+        });
+
+        this.elements.projectSubmitBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const name = this.elements.projectNameInput.value.trim();
+            if (!name) return;
+
+            const project = new Project(name);
+            this.manager.addProject(project);
+            Storage.save(this.manager);
+
+            this.currentProject = project;
+
+            this.renderProjectList();
+            this.renderProjectTitle();
+            this.renderTodoList();
+
+            this.elements.projectForm.reset();
+            this.elements.projectModal.close();
+        });
+    };
+
+    bindTodoEvents() {
+        this.elements.addTodoBtn.addEventListener("click", () => {
+            this.elements.todoModal.showModal();
+        });
+
+        this.elements.todoSubmitBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const title = this.elements.todoTitleInput.value.trim();
+            if (!title) return;
+
+            const description = this.elements.todoDescriptionInput.value.trim();
+            const dueDate = this.elements.todoDateInput.value;
+            const priority = this.elements.todoPriorityInput.value;
+
+            const todo = new Todo(title, description, dueDate, priority);
+            this.currentProject.addTodo(todo);
+            Storage.save(this.manager);
+
+            
+            this.renderTodoList();
+
+            this.elements.todoForm.reset();
+            this.elements.todoModal.close();
+        });
+    };
+
+    bindTodoItemEvents(){
+        const items = this.elements.todoListSection.querySelectorAll(".todo-item");
+
+        items.forEach((item) => {
+            item.addEventListener("click", () => {
+                const todoId = item.dataset.id;
+                const todo = this.currentProject
+                    .getTodos()
+                    .find(t => t.id === todoId);
+
+                if (!todo) return;
+                
+                todo.toggleComplete();
+                Storage.save(this.manager);
+                this.renderTodoList();
+            })
+        })
+    };
+
+    bindEventListeners() {
+        this.bindProjectEvents();
+        this.bindTodoEvents();
+        this.bindTodoItemEvents();
     };
 
 };
