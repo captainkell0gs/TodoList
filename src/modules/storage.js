@@ -1,6 +1,6 @@
-import ProjectManager from "./projectManager";
-import Project from "./project";
-import Todo from "./todo";
+import ProjectManager from "./projectManager.js";
+import Project from "./project.js";
+import Todo from "./todo.js";
 
 class Storage {
     save(projectManager) {
