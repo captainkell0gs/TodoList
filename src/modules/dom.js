@@ -29,16 +29,20 @@ class Dom {
             todoSubmitBtn: document.getElementById("todo-submit-btn"),
         };
 
-    }
+    };
 
     init() {
         this.manager = Storage.init();
         this.currentProject = this.manager.getProjects()[0];
         if (!this.currentProject) {
-            this.currentProject = this.manager.createProject("Default Project");
+            this.currentProject = new Project("Default Project");
+            this.manager.addProject(this.currentProject);
         };
+        Storage.save(this.manager);
+
         this.renderProjectList();
         this.renderTodoList();
+        this.renderProjectTitle();
 
         this.bindEventListeners();
     };
@@ -62,6 +66,8 @@ class Dom {
                 this.currentProject = project;
                 this.renderProjectList();
                 this.renderTodoList();
+                this.renderProjectTitle();
+                
             });
 
             list.appendChild(item);
@@ -169,7 +175,8 @@ class Dom {
     bindEventListeners() {
         this.bindProjectEvents();
         this.bindTodoEvents();
-        this.bindTodoItemEvents();
     };
 
 };
+
+export default Dom;
