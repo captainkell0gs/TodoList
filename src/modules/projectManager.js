@@ -31,9 +31,9 @@ export default class ProjectManager {
 
     searchProjects(input) {
         if (!input) return this.projects;
-        const Input = input.trim().input.toLowerCase();
+        const lowerInput = input.trim().input.toLowerCase();
         return this.projects.filter(project => 
-            project.name.toLowerCase().includes(Input)
+            project.name.toLowerCase().includes(lowerInput)
         );
     }
 

@@ -6,6 +6,7 @@ class Dom {
     constructor() {
         this.manager = null;
         this.currentProject = null;
+        this.editingTodo = null;
         
         this.elements = {
             projectList: document.getElementById("project-list"),
@@ -27,6 +28,7 @@ class Dom {
             todoDateInput: document.getElementById("todo-date-input"),
             todoPriorityInput: document.getElementById("todo-priority-input"),
             todoSubmitBtn: document.getElementById("todo-submit-btn"),
+            todoTemplate: document.getElementById("todo-item-template")
         };
 
     };
@@ -56,19 +58,26 @@ class Dom {
         projects.forEach((project) => {
             const item = document.createElement("li");
             item.classList.add("project-item");
-            item.textContent = project.name;
+            item.dataset.id = project.id;
+
+            item.innerHTML = `
+                <span class="project-name">${project.name}</span>
+                <button class="rename-project">✏️</button>
+                <button class="delete-project">✕</button>
+            `;
 
             if (project === this.currentProject) {
                 item.classList.add("active");
             }
 
-            item.addEventListener("click", () => {
-                this.currentProject = project;
-                this.renderProjectList();
-                this.renderTodoList();
-                this.renderProjectTitle();
-                
-            });
+            item.addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") return;
+
+            this.currentProject = project;
+            this.renderProjectList();
+            this.renderTodoList();
+            this.renderProjectTitle();
+        });
 
             list.appendChild(item);
         });
@@ -80,25 +89,29 @@ class Dom {
 
     renderTodoList() {
         const section = this.elements.todoListSection;
-        section.innerHTML = ""; 
-        const todos = this.currentProject.getTodos();
+        section.innerHTML = "";
 
-        todos.forEach((todo) => {
-            const item = document.createElement("div");
-            item.classList.add("todo-item");
-            item.textContent = todo.title;
+        const template = this.elements.todoTemplate;
 
-            if (todo.completed) {
-                item.classList.add("completed");
-            }
+        this.currentProject.getTodos().forEach(todo => {
+            const clone = template.content.cloneNode(true);
+            const item = clone.querySelector(".todo-item");
 
             item.dataset.id = todo.id;
 
-            section.appendChild(item);
-        });
+            const checkbox = clone.querySelector(".todo-checkbox");
+            const title = clone.querySelector(".todo-title");
 
+            checkbox.checked = todo.completed;
+            title.textContent = todo.title;
+
+            if (todo.completed) item.classList.add("completed");
+            if (todo.isOverdue()) item.classList.add("overdue");
+
+            section.appendChild(clone);
+        });
         this.bindTodoItemEvents();
-    };
+    }
 
     bindProjectEvents() {
         this.elements.addProjectBtn.addEventListener("click", () => {
@@ -153,28 +166,85 @@ class Dom {
         });
     };
 
-    bindTodoItemEvents(){
-        const items = this.elements.todoListSection.querySelectorAll(".todo-item");
+    bindProjectItemEvents() {
+        this.elements.projectList.addEventListener("click", (e) => {
+            const item = e.target.closest(".project-item");
+            if (!item) return;
 
-        items.forEach((item) => {
-            item.addEventListener("click", () => {
-                const todoId = item.dataset.id;
-                const todo = this.currentProject
-                    .getTodos()
-                    .find(t => t.id === todoId);
+            const projectId = item.dataset.id;
+            const project = this.manager.getProject(projectId);
+            if (!project) return;
 
-                if (!todo) return;
-                
-                todo.toggleComplete();
+            // DELETE
+            if (e.target.classList.contains("delete-project")) {
+                if (!confirm("Delete this project?")) return;
+
+                this.manager.removeProject(projectId);
+
+                if (this.currentProject.id === projectId) {
+                    const fallback = this.manager.getProjects()[0];
+                    this.currentProject = fallback || null;
+                }
+
                 Storage.save(this.manager);
+                this.renderProjectList();
+                this.renderProjectTitle();
                 this.renderTodoList();
-            })
-        })
-    };
+                return;
+            }
+
+            // RENAME
+            if (e.target.classList.contains("rename-project")) {
+                const newName = prompt("Rename project:", project.name);
+                if (!newName || !newName.trim()) return;
+
+                project.edit(newName.trim());
+
+                Storage.save(this.manager);
+                this.renderProjectList();
+                this.renderProjectTitle();
+            }
+        });
+    }
+
+    bindTodoItemEvents() {
+        this.elements.todoListSection.addEventListener("click", (e) => {
+            const item = e.target.closest(".todo-item");
+            if (!item) return;
+
+            const todoId = item.dataset.id;
+            const todo = this.currentProject.getTodos().find(t => t.id === todoId);
+            if (!todo) return;
+
+            if (e.target.classList.contains("delete-btn")) {
+                this.currentProject.removeTodo(todoId);
+            }
+
+            if (e.target.classList.contains("edit-btn")) {
+                this.editingTodo = todo;
+
+                this.elements.todoTitleInput.value = todo.title;
+                this.elements.todoDescriptionInput.value = todo.description;
+                this.elements.todoDateInput.value = todo.dueDate;
+                this.elements.todoPriorityInput.value = todo.priority;
+
+                this.elements.todoModal.showModal();
+                return;
+            }
+
+            if (e.target.classList.contains("todo-checkbox")) {
+                todo.toggleComplete();
+            }
+
+            Storage.save(this.manager);
+            this.renderTodoList();
+        });
+    }
 
     bindEventListeners() {
         this.bindProjectEvents();
         this.bindTodoEvents();
+        this.bindProjectItemEvents();
     };
 
 };
