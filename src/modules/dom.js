@@ -105,7 +105,7 @@ class Dom {
             const description = clone.querySelector(".todo-description");
             const dueDate = clone.querySelector(".todo-date");
             const priority = clone.querySelector(".todo-priority");
-
+            const overdueBadge = clone.querySelector(".overdue-badge");
             checkbox.checked = todo.completed;
             title.textContent = todo.title;
 
@@ -113,12 +113,16 @@ class Dom {
             dueDate.textContent = todo.dueDate ? `Due: ${todo.dueDate}` : "No due date";
             priority.textContent = `Priority: ${todo.priority}`;    
 
+            item.classList.add(`priority-${todo.priority}`);
+
             if (todo.completed) item.classList.add("completed");
-            if (todo.isOverdue()) item.classList.add("overdue");
+            if (todo.isOverdue()) {
+                item.classList.add("overdue");
+                overdueBadge.classList.remove("hidden");
+            }
 
             section.appendChild(clone);
         });
-        this.bindTodoItemEvents();
     }
 
     bindProjectEvents() {
@@ -299,6 +303,7 @@ class Dom {
         this.bindTodoEvents();
         this.bindProjectItemEvents();
         this.bindKeyboardEvents();
+        this.bindTodoItemEvents();
     };
 
 };
