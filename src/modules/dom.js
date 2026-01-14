@@ -28,7 +28,7 @@ class Dom {
             todoDateInput: document.getElementById("todo-date-input"),
             todoPriorityInput: document.getElementById("todo-priority-input"),
             todoSubmitBtn: document.getElementById("todo-submit-btn"),
-            todoTemplate: document.getElementById("todo-item-template")
+            todoTemplate: document.getElementById("todo-item-template"),
         };
 
     };
@@ -102,8 +102,16 @@ class Dom {
             const checkbox = clone.querySelector(".todo-checkbox");
             const title = clone.querySelector(".todo-title");
 
+            const description = clone.querySelector(".todo-description");
+            const dueDate = clone.querySelector(".todo-date");
+            const priority = clone.querySelector(".todo-priority");
+
             checkbox.checked = todo.completed;
             title.textContent = todo.title;
+
+            description.textContent = todo.description || "No description";
+            dueDate.textContent = todo.dueDate ? `Due: ${todo.dueDate}` : "No due date";
+            priority.textContent = `Priority: ${todo.priority}`;    
 
             if (todo.completed) item.classList.add("completed");
             if (todo.isOverdue()) item.classList.add("overdue");
@@ -215,9 +223,25 @@ class Dom {
             const todoId = item.dataset.id;
             const todo = this.currentProject.getTodos().find(t => t.id === todoId);
             if (!todo) return;
+            
+            if (
+                e.target.classList.contains("todo-checkbox") ||
+                e.target.classList.contains("edit-btn") ||
+                e.target.classList.contains("delete-btn")
+            ){
+
+            } else {
+                // Toggle details view
+                const details = item.querySelector(".todo-details");
+                details.classList.toggle("hidden");
+                return;
+            }
 
             if (e.target.classList.contains("delete-btn")) {
                 this.currentProject.removeTodo(todoId);
+                Storage.save(this.manager);
+                this.renderTodoList();
+                return;
             }
 
             if (e.target.classList.contains("edit-btn")) {
@@ -234,17 +258,47 @@ class Dom {
 
             if (e.target.classList.contains("todo-checkbox")) {
                 todo.toggleComplete();
+                Storage.save(this.manager);
+                this.renderTodoList();
+            }
+        });
+    }
+
+    bindKeyboardEvents() {
+        document.addEventListener("keydown", (e) => {
+            const todoModalOpen = this.elements.todoModal.open;
+            const projectModalOpen = this.elements.projectModal.open;
+
+            // Close modals on Escape
+            if (e.key === "Escape") {
+                if (todoModalOpen) this.elements.todoModal.close(); 
+                if (projectModalOpen) this.elements.projectModal.close();
+                return;
+            }
+            
+            // Submit forms on Enter
+            if (e.key === "Enter") {
+                if (todoModalOpen) {
+                    e.preventDefault();
+                    this.elements.todoSubmitBtn.click();
+                    return;
+                }
+
+                if (projectModalOpen) {
+                    e.preventDefault();
+                    this.elements.projectSubmitBtn.click();
+                    return;
+                }
             }
 
-            Storage.save(this.manager);
-            this.renderTodoList();
-        });
+        })
     }
 
     bindEventListeners() {
         this.bindProjectEvents();
         this.bindTodoEvents();
         this.bindProjectItemEvents();
+        this.bindKeyboardEvents();
     };
 
 };
