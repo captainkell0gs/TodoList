@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div id="todo-app">
@@ -13,14 +14,29 @@
                 <h2>Projects</h2>
                 <button id="add-project-btn">+</button>
             </header>
-
+                
             <ul id="project-list"></ul>
+
+            <template id="project-item-template">
+                <li class="project-item">
+                    <span class="project-name"></span>
+
+                    <div class="projects-actions">
+                        <button class="project-menu-btn">⋮</button>
+
+                        <div class="project-menu hidden">
+                            <button class="rename-project">Edit</button>
+                            <button class="delete-project danger">Delete</button>
+                        </div>
+                    </div>
+                </li>
+            </template>
         </aside>
 
         <main id="main">
             <header id="main-header">
                 <h2 id="project-title">Default Project</h2>
-                <button id="add-todo-btn" disabled>Add Todo</button>
+                <button id="add-todo-btn">Add Todo</button>
             </header>
 
             <section id="todo-list-section"></section>
@@ -61,5 +77,31 @@
             </menu>
         </form>
     </dialog>
+
+    <template id="todo-item-template">
+        <div class="todo-item">
+            <div class="todo-main">
+                <input type="checkbox" class="todo-checkbox">
+                <span class="todo-title"></span>
+                <span class="overdue-badge  hidden">OVERDUE</span>
+                
+                <div class="todo-actions">
+                    <button class="todo-menu-btn">⋮</button>
+                    <div class="todo-menu hidden">
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="todo-details hidden">
+                <p class="todo-description"></p>
+                <p class="todo-date"></p>
+                <p class="todo-priority"></p>
+            </div>
+        </div>
+    </template>
+    
+    <script type="module" src="./modules/index.js"></script>
 </body>
 </html>
