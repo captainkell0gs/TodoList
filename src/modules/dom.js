@@ -20,6 +20,7 @@ class Dom {
             projectForm: document.getElementById("project-form"),
             projectNameInput: document.getElementById("project-name-input"),
             projectSubmitBtn: document.getElementById("project-submit-btn"),
+            projectTemplate: document.getElementById("project-item-template"),
 
             todoModal: document.getElementById("todo-modal"),
             todoForm: document.getElementById("todo-form"),
@@ -54,33 +55,24 @@ class Dom {
         list.innerHTML = ""; // clear old list
 
         const projects = this.manager.getProjects();
+        const template = this.elements.projectTemplate;
 
         projects.forEach((project) => {
-            const item = document.createElement("li");
-            item.classList.add("project-item");
+            const clone = template.content.cloneNode(true);
+            const item = clone.querySelector(".project-item");
+
             item.dataset.id = project.id;
 
-            item.innerHTML = `
-                <span class="project-name">${project.name}</span>
-                <button class="rename-project">✏️</button>
-                <button class="delete-project">✕</button>
-            `;
+            const name = clone.querySelector(".project-name");
+            name.textContent = project.name;
 
             if (project === this.currentProject) {
                 item.classList.add("active");
             }
 
-            item.addEventListener("click", (e) => {
-            if (e.target.tagName === "BUTTON") return;
-
-            this.currentProject = project;
-            this.renderProjectList();
-            this.renderTodoList();
-            this.renderProjectTitle();
+            list.appendChild(clone);
         });
 
-            list.appendChild(item);
-        });
     };
 
     renderProjectTitle() {
@@ -187,6 +179,12 @@ class Dom {
             const project = this.manager.getProject(projectId);
             if (!project) return;
 
+            if (e.target.classList.contains("project-menu-btn")) {
+                e.stopPropagation();
+                e.target.nextElementSibling.classList.toggle("hidden");
+                return;
+            }
+
             // DELETE
             if (e.target.classList.contains("delete-project")) {
                 if (!confirm("Delete this project?")) return;
@@ -216,7 +214,24 @@ class Dom {
                 this.renderProjectList();
                 this.renderProjectTitle();
             }
+
+            // SELECT PROJECT
+            if (!e.target.closest(".project-actions")) {
+                this.currentProject = project;
+                this.renderProjectList();
+                this.renderProjectTitle();
+                this.renderTodoList();
+            }
         });
+
+            // CLOSE MENUS ON OUTSIDE CLICK
+            document.addEventListener("click", (e) => {
+                if (!e.target.closest(".project-actions")) {
+                    document.querySelectorAll(".project-menu").forEach(menu =>
+                        menu.classList.add("hidden")
+                    );
+                }
+            });
     }
 
     bindTodoItemEvents() {
@@ -227,20 +242,15 @@ class Dom {
             const todoId = item.dataset.id;
             const todo = this.currentProject.getTodos().find(t => t.id === todoId);
             if (!todo) return;
-            
-            if (
-                e.target.classList.contains("todo-checkbox") ||
-                e.target.classList.contains("edit-btn") ||
-                e.target.classList.contains("delete-btn")
-            ){
 
-            } else {
-                // Toggle details view
-                const details = item.querySelector(".todo-details");
-                details.classList.toggle("hidden");
+            // MENU TOGGLE
+            if (e.target.classList.contains("todo-menu-btn")) {
+                const menu = e.target.nextElementSibling;
+                menu.classList.toggle("hidden");
                 return;
             }
 
+            // MENU ACTIONS: DELETE & EDIT
             if (e.target.classList.contains("delete-btn")) {
                 this.currentProject.removeTodo(todoId);
                 Storage.save(this.manager);
@@ -260,10 +270,30 @@ class Dom {
                 return;
             }
 
+            // TOGGLE COMPLETE
             if (e.target.classList.contains("todo-checkbox")) {
                 todo.toggleComplete();
                 Storage.save(this.manager);
                 this.renderTodoList();
+                return;
+            }
+
+            //DEFAULT: TOGGLE DETAILS 
+            if (
+                !e.target.closest(".menu") &&
+                !e.target.classList.contains("todo-menu-btn")
+            ) {
+                const details = item.querySelector(".todo-details");
+                details.classList.toggle("hidden");
+            }
+        });
+
+        // CLOSE MENUS ON OUTSIDE CLICK
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".todo-actions")) {
+                document.querySelectorAll(".todo-menu").forEach(menu =>
+                    menu.classList.add("hidden")
+                );
             }
         });
     }
