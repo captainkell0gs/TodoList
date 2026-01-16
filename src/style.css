@@ -62,7 +62,6 @@ body {
     height: 28px;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
 }
 
 #project-list {
@@ -75,10 +74,17 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem;
     border-radius: 6px;
     cursor: pointer;
+    gap: 0.5rem;
+}
+
+.project-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .project-item:hover {
@@ -91,7 +97,7 @@ body {
 }
 
 .project-actions {
-    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .project-menu-btn {
@@ -125,7 +131,6 @@ body {
     padding: 0.5rem 0.75rem;
     text-align: left;
     cursor: pointer;
-    color: var(--text-primary);
 }
 
 .project-menu button:hover {
@@ -162,26 +167,34 @@ body {
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
 }
 
 #todo-list-section {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
-/* TODO ITEM */
+/* TODO ITEMS */
 .todo-item {
     padding: 0.75rem;
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
+    border-bottom: 1px solid var(--border-light);
     background: var(--bg-main);
-    cursor: pointer;
+    transition: background 0.15s ease;
 }
 
 .todo-item:hover {
     background: #f9fafb;
+}
+
+.todo-item.active {
+    background: #eef2ff;
+    border-left: 3px solid #6366f1;
+    padding-left: calc(0.5rem - 3px);
+}
+
+/* divider spacing */
+.todo-item:first-child {
+    border-top: 1px solid var(--border-light);
 }
 
 .todo-main {
@@ -212,6 +225,18 @@ body {
 .todo-actions {
     margin-left: auto;
     position: relative;
+}
+
+.todo-actions .todo-menu-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.todo-item:hover .todo-menu-btn,
+.todo-item:focus-within .todo-menu-btn {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .todo-menu-btn {
@@ -251,22 +276,13 @@ body {
 }
 
 /* PRIORITY */
-.priority-low {
-    border-left: 4px solid #22c55e;
-}
-
-.priority-medium {
-    border-left: 4px solid #f59e0b;
-}
-
-.priority-high {
-    border-left: 4px solid #ef4444;
-}
+.priority-low { border-left: 4px solid #22c55e; }
+.priority-medium { border-left: 4px solid #f59e0b; }
+.priority-high { border-left: 4px solid #ef4444; }
 
 /* OVERDUE */
 .overdue {
     background: #fff7ed;
-    border-color: #fdba74;
 }
 
 .overdue-badge {
@@ -278,17 +294,8 @@ body {
     margin-left: auto;
 }
 
-/* EMPTY */
-.empty-state {
-    text-align: center;
-    color: var(--text-muted);
-    margin-top: 3rem;
-}
-
-/* FORMS / DIALOG */
-.hidden {
-    display: none;
-}
+/* FORMS */
+.hidden { display: none; }
 
 dialog {
     border: none;

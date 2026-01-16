@@ -145,6 +145,8 @@ class Dom {
 
     bindTodoEvents() {
         this.elements.addTodoBtn.addEventListener("click", () => {
+            this.editingTodo = null;
+            this.elements.todoForm.reset();
             this.elements.todoModal.showModal();
         });
 
@@ -158,11 +160,16 @@ class Dom {
             const dueDate = this.elements.todoDateInput.value;
             const priority = this.elements.todoPriorityInput.value;
 
-            const todo = new Todo(title, description, dueDate, priority);
-            this.currentProject.addTodo(todo);
-            Storage.save(this.manager);
+            if (this.editingTodo) {
+                this.editingTodo.edit(title, description, dueDate, priority, this.editingTodo.notes);
 
-            
+                this.editingTodo = null;
+            } else {
+                const todo = new Todo(title, description, dueDate, priority);
+                this.currentProject.addTodo(todo);
+            }
+
+            Storage.save(this.manager);
             this.renderTodoList();
 
             this.elements.todoForm.reset();
@@ -303,14 +310,14 @@ class Dom {
             const todoModalOpen = this.elements.todoModal.open;
             const projectModalOpen = this.elements.projectModal.open;
 
-            // Close modals on Escape
+            // CLOSE MODALS ON ESCAPE
             if (e.key === "Escape") {
                 if (todoModalOpen) this.elements.todoModal.close(); 
                 if (projectModalOpen) this.elements.projectModal.close();
                 return;
             }
             
-            // Submit forms on Enter
+            // SUBMIT FORMS ON ENTER
             if (e.key === "Enter") {
                 if (todoModalOpen) {
                     e.preventDefault();
