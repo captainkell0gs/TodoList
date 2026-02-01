@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="609a232ab53e413e38d2.css">
+<script defer src="main.js"></script></head>
+<body>
+    <div id="todo-app">
+
+        <aside id="sidebar">
+            <header>
+                <h2>Projects</h2>
+                <button id="add-project-btn">+</button>
+            </header>
+                
+            <ul id="project-list"></ul>
+
+            <template id="project-item-template">
+                <li class="project-item">
+                    <span class="project-name"></span>
+
+                    <div class="projects-actions">
+                        <button class="project-menu-btn">⋮</button>
+
+                        <div class="project-menu hidden">
+                            <button class="rename-project">Edit</button>
+                            <button class="delete-project danger">Delete</button>
+                        </div>
+                    </div>
+                </li>
+            </template>
+        </aside>
+
+        <main id="main">
+            <header id="main-header">
+                <h2 id="project-title">Default Project</h2>
+                <button id="add-todo-btn">Add Todo</button>
+            </header>
+
+            <section id="todo-list-section"></section>
+        </main>
+
+    </div>
+
+    <dialog id="project-modal">
+        <form method="dialog" id="project-form">
+            <h3>New Project</h3>
+            <input type="text" id="project-name-input" placeholder="Project name" required>
+            <menu>
+                <button value="cancel">Cancel</button>
+                <button id="project-submit-btn" value="default">Create</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <dialog id="todo-modal">
+        <form method="dialog" id="todo-form">
+            <h3>New Todo</h3>
+
+            <input type="text" id="todo-title-input" placeholder="Title" required>
+
+            <textarea id="todo-description-input" placeholder="Description"></textarea>
+
+            <input type="date" id="todo-date-input">
+
+            <select id="todo-priority-input">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
+
+            <menu>
+                <button value="cancel">Cancel</button>
+                <button id="todo-submit-btn" value="default">Save</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <template id="todo-item-template">
+        <div class="todo-item">
+            <div class="todo-main">
+                <input type="checkbox" class="todo-checkbox">
+                <span class="todo-title"></span>
+                <span class="overdue-badge  hidden">OVERDUE</span>
+                
+                <div class="todo-actions">
+                    <button class="todo-menu-btn">⋮</button>
+                    <div class="todo-menu hidden">
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="todo-details hidden">
+                <p class="todo-description"></p>
+                <p class="todo-date"></p>
+                <p class="todo-priority"></p>
+            </div>
+        </div>
+    </template>
+    
+    <script type="module" src="60dfb7ca609593ad2d2a.js"></script>
+</body>
+</html>
