@@ -1,3 +1,6 @@
+import { isBefore, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
+
 export default class Todo {
     constructor(title, description, dueDate, priority){ 
         this.title = title;
@@ -24,13 +27,12 @@ export default class Todo {
 
     isOverdue() {
         if (this.completed) return false;
+        if (!this.dueDate) return false;
+        return isBefore(startOfDay(this.dueDate), startOfDay(new Date()));
+    }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to midnight
-
-        const due = new Date(this.dueDate);
-        due.setHours(0, 0, 0, 0); // Normalize to midnight
-
-        return due < today;
+    formattedDueDate() {
+        if (!this.dueDate) return "No due date";
+        return format(this.dueDate, 'eeee, MMMM do, yyyy');
     }
 }

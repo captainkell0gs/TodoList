@@ -102,7 +102,7 @@ class Dom {
             title.textContent = todo.title;
 
             description.textContent = todo.description || "No description";
-            dueDate.textContent = todo.dueDate ? `Due: ${todo.dueDate}` : "No due date";
+            dueDate.textContent = todo.dueDate ? `Due: ${todo.formattedDueDate()}` : "No due date";
             priority.textContent = `Priority: ${todo.priority}`;    
 
             item.classList.add(`priority-${todo.priority}`);

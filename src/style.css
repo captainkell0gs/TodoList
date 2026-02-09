@@ -172,14 +172,16 @@ body {
 #todo-list-section {
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
 }
 
 /* TODO ITEMS */
 .todo-item {
     padding: 0.75rem;
-    border-bottom: 1px solid var(--border-light);
+    border: 1px solid var(--border-light);
     background: var(--bg-main);
     transition: background 0.15s ease;
+    border-radius: 10px;
 }
 
 .todo-item:hover {
