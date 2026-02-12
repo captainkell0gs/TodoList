@@ -25,15 +25,4 @@ export default class Project {
     getTodos() {
         return this.todos;
     }
-
-    searchTodos(input) {
-        if (!input) return this.todos;
-        const lowerInput = input.toLowerCase();
-        return this.todos.filter(todo => 
-            todo.title.toLowerCase().includes(lowerInput) ||
-            todo.description.toLowerCase().includes(lowerInput) ||
-            todo.priority.toLowerCase().includes(lowerInput)||
-            todo.dueDate.includes(lowerInput)
-        );
-    }
 }

@@ -29,8 +29,6 @@ class Storage {
                     todoData.priority
                 );
                 todo.completed = todoData.completed ?? false;
-                todo.notes = todoData.notes ?? "";
-                todo.checklist = todoData.checklist ?? [];
                 todo.id = todoData.id;
                 todo.dueDate = new Date(todoData.dueDate) ?
                 new Date(todoData.dueDate) : null;

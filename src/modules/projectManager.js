@@ -29,14 +29,6 @@ export default class ProjectManager {
         return this.projects;
     }
 
-    searchProjects(input) {
-        if (!input) return this.projects;
-        const lowerInput = input.trim().input.toLowerCase();
-        return this.projects.filter(project => 
-            project.name.toLowerCase().includes(lowerInput)
-        );
-    }
-
     count() {
         return this.projects.length;
     }
